@@ -1,6 +1,8 @@
 package com.Elastic.Search.Controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import com.Elastic.Search.Service.ProductService;
 
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 
 @RestController
 @RequestMapping("/api")
@@ -64,5 +67,35 @@ public class ProductController {
 		SearchResponse<Map> searchResponse = elasticSearchService.searchResponse();
 		System.err.println(searchResponse);
 		return ResponseEntity.ok(searchResponse);
+	}
+
+	@GetMapping("/Allmatches")
+	public List<Product> AllMatches() throws ElasticsearchException, IOException {
+		SearchResponse<Product> searchResponse = elasticSearchService.MatchAll();
+
+		List<Hit<Product>> hits = searchResponse.hits().hits();
+		List<Product> products = new ArrayList<>();
+		for (Hit<Product> hit : hits) {
+
+			products.add(hit.source());
+
+		}
+		return products;
+
+	}
+
+	@GetMapping("/Allmatches/{field}")
+	public List<Product> matchField(@PathVariable String field) throws ElasticsearchException, IOException {
+		SearchResponse<Product> searchResponse = elasticSearchService.MatchFiled(field);
+
+		List<Hit<Product>> hits = searchResponse.hits().hits();
+		List<Product> products = new ArrayList<>();
+		for (Hit<Product> hit : hits) {
+
+			products.add(hit.source());
+
+		}
+		return products;
+
 	}
 }

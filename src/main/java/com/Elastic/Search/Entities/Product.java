@@ -5,7 +5,10 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Document(indexName = "product")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
 
 	@Id
